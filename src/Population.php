@@ -43,10 +43,12 @@ final class Population
                     $organism->mutate();
                 }
             }
-            // Check to see if the most fit member of the population meets the fitness criteria
-            $bestFit = $this->getBestFit();
-            if($bestFit->fitness() >= $this->parameters->getFitnessGoal()) {
-                return $bestFit;
+            if($this->parameters->hasFitnessGoal()) {
+                // Check to see if the most fit member of the population meets the fitness criteria
+                $bestFit = $this->getBestFit();
+                if ($bestFit->fitness() >= $this->parameters->getFitnessGoal()) {
+                    return $bestFit;
+                }
             }
             // Discard the least fit
             $this->sortPopulation();

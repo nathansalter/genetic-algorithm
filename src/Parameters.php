@@ -38,6 +38,9 @@ final class Parameters
      */
     public function getOrganismPrototype() : Organism
     {
+        if(! $this->organismPrototype instanceof Organism) {
+            throw new \RuntimeException(sprintf('%s() Missing Organism', __METHOD__));
+        }
         return $this->organismPrototype;
     }
 
@@ -56,6 +59,9 @@ final class Parameters
      */
     public function getPopulationSize() : int
     {
+        if(null === $this->populationSize) {
+            throw new \RuntimeException(sprintf('%s() Missing Population Size', __METHOD__));
+        }
         return $this->populationSize;
     }
 
@@ -77,6 +83,9 @@ final class Parameters
      */
     public function getMutateRate() : float
     {
+        if(null === $this->mutateRate) {
+            throw new \RuntimeException(sprintf('%s() Missing Mutate rate', __METHOD__));
+        }
         return $this->mutateRate;
     }
 
@@ -102,6 +111,9 @@ final class Parameters
      */
     public function getBreedRate() : float
     {
+        if(null === $this->breedRate) {
+            throw new \RuntimeException(sprintf('%s() Missing Breed rate', __METHOD__));
+        }
         return $this->breedRate;
     }
 
@@ -123,10 +135,21 @@ final class Parameters
     }
 
     /**
+     * @return bool
+     */
+    public function hasFitnessGoal() : bool
+    {
+        return null !== $this->fitnessGoal;
+    }
+
+    /**
      * @return int
      */
     public function getFitnessGoal() : int
     {
+        if(!$this->hasFitnessGoal()) {
+            throw new \RuntimeException(sprintf('%s() Missing Fitness goal', __METHOD__));
+        }
         return $this->fitnessGoal;
     }
 
@@ -145,6 +168,9 @@ final class Parameters
      */
     public function getMaxGenerations() : int
     {
+        if(null === $this->maxGenerations) {
+            throw new \RuntimeException(sprintf('%s() Missing Maximum generations', __METHOD__));
+        }
         return $this->maxGenerations;
     }
 
