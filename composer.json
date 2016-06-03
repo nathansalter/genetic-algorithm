@@ -1,0 +1,21 @@
+{
+  "name": "nathansalter/genetic-algorithm",
+  "description": "Simple framework for building and solving genetic algorithms",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "GeneticAlgorithm\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "GeneticAlgorithm\\": "test/"
+    }
+  },
+  "require": {
+    "php": "^7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.0"
+  }
+}
