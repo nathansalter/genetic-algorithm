@@ -1,8 +1,12 @@
 <?php
 namespace GeneticAlgorithm;
 
-class Population
+final class Population
 {
+    const BREED_GRANULARITY = 10000;
+
+    const MUTATE_GRANULARITY = 10000;
+
     /**
      * @var Parameters
      */
@@ -22,23 +26,34 @@ class Population
         $this->parameters = $parameters;
         $this->population = [];
         for($n = 0; $n < $parameters->getPopulationSize(); $n++) {
-            $this->population[$n] = clone $this->parameters->getOrganismPrototype();
+            $this->population[] = clone $this->parameters->getOrganismPrototype();
         }
     }
     
     public function solve() : Organism
     {
         for($n = 0; $n < $this->parameters->getMaxGenerations(); $n++) {
-            $this->sortPopulation();
             // Calculate the next iteration of the population
+            foreach($this->population as $organism) {
+                if(mt_rand(0, self::BREED_GRANULARITY) < $this->parameters->getBreedRate() * self::BREED_GRANULARITY) {
+                    $mate = $this->population[mt_rand(0, $this->parameters->getPopulationSize())];
+                    $this->population[] = $organism->breed($mate);
+                }
+                if(mt_rand(0, self::MUTATE_GRANULARITY) < $this->parameters->getMutateRate() * self::MUTATE_GRANULARITY) {
+                    $organism->mutate();
+                }
+            }
+            // Check to see if the most fit member of the population meets the fitness criteria
+            $bestFit = $this->getBestFit();
+            if($bestFit->fitness() >= $this->parameters->getFitnessGoal()) {
+                return $bestFit;
+            }
+            // Discard the least fit
+            $this->sortPopulation();
+            $this->population = array_slice($this->population, 0, $this->parameters->getPopulationSize());
         }
-        // Check to see if the most fit member of the population meets the fitness criteria
-        $bestFit = $this->getBestFit();
-        if($bestFit->fitness() >= $this->parameters->getFitnessGoal()) {
-            return $bestFit;
-        }
-        // We have no organism which meets the fitness goal
-        throw new UnfitException('No fit organism', null, null, $bestFit);
+        // Just return the best result we could find
+        return $this->getBestFit();
     }
 
     private function sortPopulation()
