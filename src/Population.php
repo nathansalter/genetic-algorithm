@@ -85,7 +85,8 @@ final class Population
         $splicePointA = mt_rand(0, count($dna) - 1);
         $splicePointB = mt_rand(0, count($dna) - 1);
 
-        $dna[$splicePointA] = $dna[$splicePointB];
+        $dna[$splicePointA] = $a->getDna()[$splicePointB];
+        $dna[$splicePointB] = $a->getDna()[$splicePointA];
 
         return $this->parameters->getOrganismFactory()->createFromDna($dna);
     }
