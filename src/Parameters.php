@@ -6,7 +6,7 @@ final class Parameters
     /**
      * @var Organism
      */
-    private $organismPrototype;
+    private $organismFactory;
 
     /**
      * @var int
@@ -34,29 +34,29 @@ final class Parameters
     private $maxGenerations;
 
     /**
-     * @return Organism
+     * @var bool Deny repeat chromosomes e.g. ABDE instead of AAABBBDDEEE
      */
-    public function getOrganismPrototype() : Organism
-    {
-        if(! $this->organismPrototype instanceof Organism) {
-            throw new \RuntimeException(sprintf('%s() Missing Organism', __METHOD__));
-        }
-        return $this->organismPrototype;
-    }
+    private $uniqueDna = false;
 
     /**
-     * @param Organism $organismPrototype
-     * @return Parameters
+     * @var bool If target fit is negative
      */
-    public function setOrganismPrototype(Organism $organismPrototype)
+    private $negativeFit = false;
+
+    public function getOrganismFactory() : OrganismFactory
     {
-        $this->organismPrototype = $organismPrototype;
+        if(! $this->organismFactory instanceof OrganismFactory) {
+            throw new \RuntimeException(sprintf('%s() Missing OrganismFactory', __METHOD__));
+        }
+        return $this->organismFactory;
+    }
+
+    public function setOrganismFactory(OrganismFactory $organismFactory): Parameters
+    {
+        $this->organismFactory = $organismFactory;
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPopulationSize() : int
     {
         if(null === $this->populationSize) {
@@ -65,11 +65,7 @@ final class Parameters
         return $this->populationSize;
     }
 
-    /**
-     * @param int $populationSize
-     * @return Parameters
-     */
-    public function setPopulationSize(int $populationSize)
+    public function setPopulationSize(int $populationSize): Parameters
     {
         if($populationSize <= 0) {
             throw new \InvalidArgumentException(sprintf('%s() only accepts Natural numbers, given %d', __METHOD__, $populationSize));
@@ -78,9 +74,6 @@ final class Parameters
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getMutateRate() : float
     {
         if(null === $this->mutateRate) {
@@ -89,11 +82,7 @@ final class Parameters
         return $this->mutateRate;
     }
 
-    /**
-     * @param float $mutateRate
-     * @return Parameters
-     */
-    public function setMutateRate(float $mutateRate)
+    public function setMutateRate(float $mutateRate): Parameters
     {
         if($mutateRate < 0 || $mutateRate > 1) {
             throw new \InvalidArgumentException(sprintf(
@@ -106,9 +95,6 @@ final class Parameters
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getBreedRate() : float
     {
         if(null === $this->breedRate) {
@@ -117,11 +103,7 @@ final class Parameters
         return $this->breedRate;
     }
 
-    /**
-     * @param float $breedRate
-     * @return Parameters
-     */
-    public function setBreedRate(float $breedRate)
+    public function setBreedRate(float $breedRate): Parameters
     {
         if($breedRate < 0 || $breedRate > 1) {
             throw new \InvalidArgumentException(sprintf(
@@ -134,17 +116,11 @@ final class Parameters
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function hasFitnessGoal() : bool
     {
         return null !== $this->fitnessGoal;
     }
 
-    /**
-     * @return int
-     */
     public function getFitnessGoal() : int
     {
         if(!$this->hasFitnessGoal()) {
@@ -153,19 +129,12 @@ final class Parameters
         return $this->fitnessGoal;
     }
 
-    /**
-     * @param int $fitnessGoal
-     * @return Parameters
-     */
-    public function setFitnessGoal(int $fitnessGoal)
+    public function setFitnessGoal(int $fitnessGoal): Parameters
     {
         $this->fitnessGoal = $fitnessGoal;
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxGenerations() : int
     {
         if(null === $this->maxGenerations) {
@@ -174,16 +143,34 @@ final class Parameters
         return $this->maxGenerations;
     }
 
-    /**
-     * @param int $maxGenerations
-     * @return Parameters
-     */
-    public function setMaxGenerations(int $maxGenerations)
+    public function setMaxGenerations(int $maxGenerations): Parameters
     {
         if($maxGenerations <= 0) {
             throw new \InvalidArgumentException(sprintf('%s() only accepts Natural numbers, given %d', __METHOD__, $maxGenerations));
         }
         $this->maxGenerations = $maxGenerations;
+        return $this;
+    }
+
+    public function isUniqueDna(): bool
+    {
+        return $this->uniqueDna;
+    }
+
+    public function setUniqueDna(bool $uniqueDna): Parameters
+    {
+        $this->uniqueDna = $uniqueDna;
+        return $this;
+    }
+
+    public function isNegativeFit(): bool
+    {
+        return $this->negativeFit;
+    }
+
+    public function setNegativeFit(bool $negativeFit): Parameters
+    {
+        $this->negativeFit = $negativeFit;
         return $this;
     }
 }

@@ -2,7 +2,7 @@
 namespace GeneticAlgorithm;
 
 /**
- * A simple organism for the genetic algorithm. This organism MUST provide itself with an initial state,
+ * A simple organism for the genetic algorithm. This organism MUST accept an initial state in the constructor,
  * and recreate this state when it is __cloned().
  *
  * @package GeneticAlgorithm
@@ -10,24 +10,23 @@ namespace GeneticAlgorithm;
 interface Organism
 {
     /**
-     * Changes the state of this organism in a random fashion
-     * 
-     * @return void
+     * Get the DNA array for this Organism. Normally this would be a string, but we'd spend all our time doing
+     * str_split and implode() on it all the time, so may as well keep it as an array
+     *
+     * Example: AAADDDAACCCDDD
+     *      OR: ABFEGCD
+     *
+     * @return string[]
      */
-    public function mutate();
-
-    /**
-     * Breeds this organism with a mate, returns the new organism. Note; this
-     * organism MAY be itself
-     * 
-     * @param Organism $mate
-     * @return Organism
-     */
-    public function breed(Organism $mate) : Organism;
+    public function getDna(): array;
 
     /**
      * Return a value of fitness, how well this organism solves the problem.
      * Returns an INT with higher numbers indicating better fitness.
+     *
+     * OR
+     *
+     * Returns an INT with lower numbers indicating better fitness if set up in the parameters
      * 
      * @return int
      */

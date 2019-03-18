@@ -1,23 +1,25 @@
 <?php
 namespace GeneticAlgorithm;
 
-class ParametersTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ParametersTest extends TestCase
 {
     /**
      * @var Parameters
      */
     private $parameters;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->parameters = new Parameters();
     }
 
-    public function testOrganismPrototype()
+    public function testOrganismFactory()
     {
-        $prototype = $this->createMock(Organism::class);
-        $this->assertSame($this->parameters, $this->parameters->setOrganismPrototype($prototype));
-        $this->assertEquals($prototype, $this->parameters->getOrganismPrototype());
+        $prototype = $this->createMock(OrganismFactory::class);
+        $this->assertSame($this->parameters, $this->parameters->setOrganismFactory($prototype));
+        $this->assertEquals($prototype, $this->parameters->getOrganismFactory());
     }
 
     public function testPopulationSize()
@@ -27,12 +29,10 @@ class ParametersTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($size, $this->parameters->getPopulationSize());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testPopulationSizeFailsForNonNaturalNumbers()
     {
         $size = -5;
+        $this->expectException(\InvalidArgumentException::class);
         $this->parameters->setPopulationSize($size);
     }
 
@@ -60,21 +60,21 @@ class ParametersTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param float $badNumber
-     * @expectedException \InvalidArgumentException
      * @dataProvider provideBadNumbers
      */
     public function testMutateRateFailsForBadNumbers(float $badNumber)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->parameters->setMutateRate($badNumber);
     }
 
     /**
      * @param float $badNumber
-     * @expectedException \InvalidArgumentException
      * @dataProvider provideBadNumbers
      */
     public function testBreedRateFailsForBadNumbers(float $badNumber)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->parameters->setBreedRate($badNumber);
     }
 
@@ -92,12 +92,24 @@ class ParametersTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($maxGenerations, $this->parameters->getMaxGenerations());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testMaxGenerationsFailsForNonNaturalNumbers()
     {
         $maxGenerations = 0;
+        $this->expectException(\InvalidArgumentException::class);
         $this->parameters->setMaxGenerations($maxGenerations);
+    }
+
+    public function testUniqueDna()
+    {
+        $this->assertFalse($this->parameters->isUniqueDna());
+        $this->parameters->setUniqueDna(true);
+        $this->assertTrue($this->parameters->isUniqueDna());
+    }
+
+    public function testNegativeFit()
+    {
+        $this->assertFalse($this->parameters->isNegativeFit());
+        $this->parameters->setNegativeFit(true);
+        $this->assertTrue($this->parameters->isNegativeFit());
     }
 }
